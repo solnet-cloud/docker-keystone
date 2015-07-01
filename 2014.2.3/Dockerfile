@@ -30,7 +30,7 @@ RUN \
     apt-get update && \
     apt-get install ubuntu-cloud-keyring -y && \
     echo "deb http://ubuntu-cloud.archive.canonical.com/ubuntu" \
-        "trusty-updates/juno main" > /etc/apt/sources.list.d/cloudarchive-juno.list &&
+        "trusty-updates/juno main" > /etc/apt/sources.list.d/cloudarchive-juno.list && \
     rm -fr /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 # Install the required packages
