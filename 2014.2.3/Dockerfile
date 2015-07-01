@@ -43,6 +43,7 @@ RUN \
 # Prepare the various directories in /ks-data/
 RUN \
     mkdir -p /ks-data/ && \
+    mkdir -p /ks-data/ssl/ && \
     mkdir -p /ks-templates/ && \
     mkdir -p /ks-templates/static
   
