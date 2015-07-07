@@ -29,9 +29,52 @@ ssl_path = '/ks-data/ssl/'
 ########################################################################################################################
 argparser = argparse.ArgumentParser(description='Run a docker container containing a Keystone Instance')
 
-argparser.add_argument('--adm-token',
+argparser.add_argument('--adm-token','-t',
                        action='store',
                        help='Enables the adminstrative token')
+argparser.add_argument('--debug','-d',       
+                       action='store_true',
+                       help='Turns on debug logging')
+argparser.add_argument('--notify-topic','-n',
+                       action='store',
+                       help='The notify topic to use (Default: notifications)')
+argparser.add_argument('--token-expire','-e',
+                       action='store',
+                       type=int,
+                       help='The token expire period to use in seconds (Default: 3600)')
+argparser.add_argument('--default-domain','-D',
+                       action='store',
+                       help='The default to domain for v2 clients to use (Default: default)')
+argparser.add_argument('--rabbit-solo',
+                       action='store_true',
+                       help='Connect to a solo instance of RabbitMQ rather than a list of cluter nodes')
+argparser.add_argument('--rabbit-port',
+                       action='store',
+                       type=int,
+                       help='The port you should use to connect to RabbitMQ (Default: 5672)')
+argparser.add_argument('--db-user',
+                       action='store',
+                       help='The user you should use to connect to MySQL (Default: keystone)')
+argparser.add_argument('--db-name',
+                       action='store',
+                       help='The database name you should connect to  (Default: keystone)')
+argparser.add_argument('db_host',
+                       action='store',
+                       help='The host or IP to connect to for MySQL')
+argparser.add_argument('db_pass',
+                       action='store',
+                       help='The password for MySQL')
+argparser.add_argument('rabbit_userid',
+                       action='store',
+                       help='UserID for RabbitMQ')
+argparser.add_argument('rabbit_pass',
+                       action='store',
+                       help='Password for RabbitMQ')
+argparser.add_argument('rabbit_hosts',
+                       action='store',
+                       nargs='+',
+                       help='The rabbit MQ (hosts) keystone should connect to')
+
 
 try:
     args = argparser.parse_args()
@@ -60,25 +103,21 @@ template_location = '/ks-templates'
 template_list = {}
 
 # Templates go here
-### 00-ls-input.conf ###
+### keystone.conf ###
 template_name = 'keystone.conf'
 template_dict = { 'context' : { # Subsitutions to be performed
                                 'admin_token'      : args.adm_token if args.adm_token is not None else None,
                                 'debug'            : args.debug,
                                 'notify_topic'     : args.notify_topic if args.notify_topic is not None else 'notifications',
-                                'rabbit_ha'        : args.rabbit_ha,
-                                'rabbit_hosts'     : args.rabbit_hosts,
+                                'rabbit_ha'        : not args.rabbit_solo,
+                                'rabbit_hosts'     : ' '.join(args.rabbit_hosts),
                                 'rabbit_port'      : args.rabbit_port if args.rabbit_port is not None else 5672,
                                 'rabbit_userid'    : args.rabbit_userid,
                                 'rabbit_pass'      : args.rabbit_pass,
-                                'rabbit_ssl'       : args.rabbit_ssl,
+                                'rabbit_ssl'       : False, #args.rabbit_ssl, #Not enabled yet
                                 'rabbit_ca_certs'  : args.rabbit_ca_certs if args.rabbit_ca_certs is not None else None,
                                 'rabbit_ssl_key'   : args.rabbit_ssl_key if args.rabbit_ssl_key is not None else None,
-                                'rabbit_ssl_cert'  : args.rabbit_ssl_cert if args.rabbit_ssl_cert is not None else None,
-                                'ssl_key'          : args.ssl_key if args.ssl_key is not None else None,
-                                'ssl_cert'         : args.ssl_cert if args.ssl_cert is not None else None,
-                                'ssl_chain'        : args.ssl_chain if args.ssl_chain is not None else None,
-                                'ssl_client_req'   : args.ssl_client_req,
+                                'rabbit_ssl_cert'  : args.rabbit_ssl_cert if args.rabbit_ssl_cert is not None else None,                                
                                 'keystone_db_user' : args.db_user if args.db_user is not None else 'keystone',
                                 'keystone_db_pass' : args.db_pass,
                                 'keystone_db_host' : args.db_host,
@@ -87,6 +126,17 @@ template_dict = { 'context' : { # Subsitutions to be performed
                                 'token_expire'     : args.token_expire if args.token_expire is not None else 3600,
                               },
                   'path'    : '/etc/keystone/keystone.conf',
+                  'user'    : 'root',
+                  'group'   : 'root',
+                  'mode'    : 0644 }
+template_list[template_name] = template_dict
+
+### keystone-paste.ini ###
+template_name = 'keystone-paste.ini'
+template_dict = { 'context' : { # Subsitutions to be performed
+                                'admin_token'      : args.adm_token if args.adm_token is not None else None,
+                              },
+                  'path'    : '/etc/keystone/keystone-paste.ini',
                   'user'    : 'root',
                   'group'   : 'root',
                   'mode'    : 0644 }
@@ -177,7 +227,7 @@ for template_item in template_list:
 sys.stdout.flush()
 
 # Spawn the child
-child_path = ["/logstash/bin/logstash", "-f", "/ls-data/conf/"]
+child_path = ["/usr/bin/keystone-all",]
 child = Popen(child_path, stdout = PIPE, stderr = STDOUT, shell = False) 
 
 # Reopen stdout as unbuffered. This will mean log messages will appear as soon as they become avaliable.
