@@ -110,7 +110,7 @@ template_dict = { 'context' : { # Subsitutions to be performed
                                 'debug'            : args.debug,
                                 'notify_topic'     : args.notify_topic if args.notify_topic is not None else 'notifications',
                                 'rabbit_ha'        : not args.rabbit_solo,
-                                'rabbit_hosts'     : ' '.join(args.rabbit_hosts),
+                                'rabbit_hosts'     : ','.join(args.rabbit_hosts),
                                 'rabbit_port'      : args.rabbit_port if args.rabbit_port is not None else 5672,
                                 'rabbit_userid'    : args.rabbit_userid,
                                 'rabbit_pass'      : args.rabbit_pass,
