@@ -115,9 +115,9 @@ template_dict = { 'context' : { # Subsitutions to be performed
                                 'rabbit_userid'    : args.rabbit_userid,
                                 'rabbit_pass'      : args.rabbit_pass,
                                 'rabbit_ssl'       : False, #args.rabbit_ssl, #Not enabled yet
-                                'rabbit_ca_certs'  : args.rabbit_ca_certs if args.rabbit_ca_certs is not None else None,
-                                'rabbit_ssl_key'   : args.rabbit_ssl_key if args.rabbit_ssl_key is not None else None,
-                                'rabbit_ssl_cert'  : args.rabbit_ssl_cert if args.rabbit_ssl_cert is not None else None,                                
+                                'rabbit_ca_certs'  : None, #args.rabbit_ca_certs if args.rabbit_ca_certs is not None else None,
+                                'rabbit_ssl_key'   : None, #args.rabbit_ssl_key if args.rabbit_ssl_key is not None else None,
+                                'rabbit_ssl_cert'  : None, #args.rabbit_ssl_cert if args.rabbit_ssl_cert is not None else None,                                
                                 'keystone_db_user' : args.db_user if args.db_user is not None else 'keystone',
                                 'keystone_db_pass' : args.db_pass,
                                 'keystone_db_host' : args.db_host,
