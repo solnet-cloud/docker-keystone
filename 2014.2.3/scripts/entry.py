@@ -231,11 +231,8 @@ sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
 # Sync the database
 try:
-    check_call(["/usr/bin/keystone-manage","db_sync"],stdin = PIPE, stderr = STDOUT, shell = False)
+    check_call(["/usr/bin/keystone-manage","db_sync"],stdout = sys.stdout, stderr = sys.stderr, shell = False)
 except CalledProcessError:
-     # Clear the buffer so we can see internal error messages for db_sync
-     for line in iter(child.stdout.readline, ''):
-         sys.stdout.write(line)
      print "The dbsync process failed to execute, terminating..."
      sys.exit(0) # Exiting with 0 exit code to prevent container from restarting
 
