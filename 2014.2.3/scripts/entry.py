@@ -228,6 +228,7 @@ sys.stdout.flush()
 
 # Reopen stdout as unbuffered. This will mean log messages will appear as soon as they become avaliable.
 sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+sys.stderr = os.fdopen(sys.stderr.fileno(), 'w', 0)
 
 # Sync the database
 try:
