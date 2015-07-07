@@ -8,7 +8,7 @@
 # Import required libaries
 import sys,os,pwd,grp   # OS Libraries
 import argparse         # Parse Arguments
-from subprocess import Popen, PIPE, STDOUT
+from subprocess import Popen, PIPE, STDOUT, check_call, CalledProcessError
                         # Open up a process
 
 # Important required templating libarires
@@ -226,12 +226,22 @@ for template_item in template_list:
 # Flush anything on the buffer
 sys.stdout.flush()
 
+# Reopen stdout as unbuffered. This will mean log messages will appear as soon as they become avaliable.
+sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
+
+# Sync the database
+try:
+    check_call(["/usr/bin/keystone-manage","db_sync"],stdin = PIPE, stderr = STDOUT, shell = False)
+except CalledProcessError:
+     # Clear the buffer so we can see internal error messages for db_sync
+     for line in iter(child.stdout.readline, ''):
+         sys.stdout.write(line)
+     print "The dbsync process failed to execute, terminating..."
+     sys.exit(0) # Exiting with 0 exit code to prevent container from restarting
+
 # Spawn the child
 child_path = ["/usr/bin/keystone-all",]
 child = Popen(child_path, stdout = PIPE, stderr = STDOUT, shell = False) 
-
-# Reopen stdout as unbuffered. This will mean log messages will appear as soon as they become avaliable.
-sys.stdout = os.fdopen(sys.stdout.fileno(), 'w', 0)
 
 # Output any log items to Docker
 for line in iter(child.stdout.readline, ''):
