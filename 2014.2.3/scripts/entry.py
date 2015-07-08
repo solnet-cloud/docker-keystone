@@ -58,10 +58,10 @@ argparser.add_argument('--db-user',
 argparser.add_argument('--db-name',
                        action='store',
                        help='The database name you should connect to  (Default: keystone)')
-argparser.add_argument('--endpoint-admin',
+argparser.add_argument('--admin-endpoint',
                        action='store',
                        help='Override the admin endpoint')
-argparser.add_argument('--endpoint-public',
+argparser.add_argument('--public-endpoint',
                        action='store',
                        help='Override the public endpoint')
 argparser.add_argument('--identity-uri',
