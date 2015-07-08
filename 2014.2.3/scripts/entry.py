@@ -58,6 +58,15 @@ argparser.add_argument('--db-user',
 argparser.add_argument('--db-name',
                        action='store',
                        help='The database name you should connect to  (Default: keystone)')
+argparser.add_argument('--endpoint-admin',
+                       action='store',
+                       help='Override the admin endpoint')
+argparser.add_argument('--endpoint-public',
+                       action='store',
+                       help='Override the public endpoint')
+argparser.add_argument('--identity-uri',
+                       action='store',
+                       help='Override the internal identity URI')
 argparser.add_argument('db_host',
                        action='store',
                        help='The host or IP to connect to for MySQL')
@@ -124,6 +133,9 @@ template_dict = { 'context' : { # Subsitutions to be performed
                                 'keystone_db_name' : args.db_name if args.db_name is not None else 'keystone',
                                 'default_domain'   : args.default_domain if args.default_domain is not None else 'default',
                                 'token_expire'     : args.token_expire if args.token_expire is not None else 3600,
+                                'admin_endpoint'   : args.admin_endpoint if args.admin_endpoint is not None else None,
+                                'public_endpoint'  : args.public_endpoint if args.public_endpoint is not None else None,
+                                'identity_uri'     : args.identity_uri if args.identity_uri is not None else None,
                               },
                   'path'    : '/etc/keystone/keystone.conf',
                   'user'    : 'root',
