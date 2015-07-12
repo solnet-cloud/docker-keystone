@@ -67,6 +67,13 @@ argparser.add_argument('--public-endpoint',
 argparser.add_argument('--identity-uri',
                        action='store',
                        help='Override the internal identity URI')
+argparser.add_argument('--tcp-keepalivve',
+                       action='store_true',
+                       help='Tell Keystone to set TCP Keepalive on')
+argparser.add_argument('--tcp-keepidle',
+                       action='store',
+                       type=int,
+                       help='Tell Keystone the TCP Keepalive timeout to set. Only valid when keepalive is enabled')
 argparser.add_argument('db_host',
                        action='store',
                        help='The host or IP to connect to for MySQL')
@@ -136,6 +143,8 @@ template_dict = { 'context' : { # Subsitutions to be performed
                                 'admin_endpoint'   : args.admin_endpoint if args.admin_endpoint is not None else None,
                                 'public_endpoint'  : args.public_endpoint if args.public_endpoint is not None else None,
                                 'identity_uri'     : args.identity_uri if args.identity_uri is not None else None,
+                                'tcp_keepalive'    : args.tcp_keepalive,
+                                'tcp_keepidle'     : args.tcp_keepidle if args.tcp_keepidle is not None else 600,
                               },
                   'path'    : '/etc/keystone/keystone.conf',
                   'user'    : 'root',
