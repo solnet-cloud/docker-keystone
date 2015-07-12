@@ -67,7 +67,7 @@ argparser.add_argument('--public-endpoint',
 argparser.add_argument('--identity-uri',
                        action='store',
                        help='Override the internal identity URI')
-argparser.add_argument('--tcp-keepalivve',
+argparser.add_argument('--tcp-keepalive',
                        action='store_true',
                        help='Tell Keystone to set TCP Keepalive on')
 argparser.add_argument('--tcp-keepidle',
