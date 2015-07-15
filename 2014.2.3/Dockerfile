@@ -88,8 +88,8 @@ WORKDIR /ks-data
 
 # Setup Apache2 Enviroment
 RUN \
-    rm /etc/apache2/sites_enabled/000-default.conf && \
-    ln -s /etc/apache2/sites_available/wsgi-keystone.conf /etc/apache2/sites_enabled/wsgi-keystone.conf && \
+    rm /etc/apache2/sites-enabled/000-default.conf && \
+    ln -s /etc/apache2/sites-available/wsgi-keystone.conf /etc/apache2/sites-enabled/wsgi-keystone.conf && \
     mkdir -p /var/www/cgi-bin/keystone/ && \
     ln -s /usr/local/bin/keystone.py /var/www/cgi-bin/keystone/main && \
     ln -s /usr/local/bin/keystone.py /var/www/cgi-bin/keystone/admin
