@@ -259,7 +259,7 @@ except CalledProcessError:
      sys.exit(0) # Exiting with 0 exit code to prevent container from restarting
 
 # Spawn the child
-child_path = ["/usr/bin/keystone-all",]
+child_path = ["/usr/sbin/apache2","-D","FOREGROUND"]
 child = Popen(child_path, stdout = PIPE, stderr = STDOUT, shell = False) 
 
 # Output any log items to Docker
