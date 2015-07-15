@@ -73,7 +73,7 @@ ADD templates/keystone-paste.ini /ks-templates/keystone-paste.ini
 # Mount the static configuration files
 ADD templates/static/logging.conf /etc/keystone/logging.conf
 ADD templates/static/policy.json /etc/keystone/policy.json
-ADD templates/static/wsgi-keystone.conf /etc/apache2/sites_available/wsgi-keystone.conf
+ADD templates/static/wsgi-keystone.conf /etc/apache2/sites-available/wsgi-keystone.conf
 
 
 # Install the entry script
